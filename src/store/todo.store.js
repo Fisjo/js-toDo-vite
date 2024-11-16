@@ -9,8 +9,12 @@ const Filters = {
 
 const state = {
     todos: [
-        new Todo('Tarea de prueba1'),
+        new Todo('Tarea de prueba 1'),
         new Todo('Tarea de prueba 2'),
+        new Todo('Tarea de prueba 3'),
+        new Todo('Tarea de prueba 4'),
+        new Todo('Tarea de prueba 5'),
+        
     ],
     filter: Filters.All,
 }
@@ -26,7 +30,7 @@ const loadStore = () => {
 
 
 
-const getTodo = (filter = Filters.All) => {
+const getTodos = (filter = Filters.All) => {
     switch (filter) {
         case Filters.All:
             return [...state.todos]; 
@@ -100,7 +104,7 @@ export default {
     deleteCompleted,
     deleteTodo,
     getCurrentFilter,
-    getTodo,
+    getTodos,
     initStore,
     loadStore,
     setFilter,
