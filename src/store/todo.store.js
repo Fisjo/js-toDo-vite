@@ -67,7 +67,7 @@ const getCurrentFilter = () => {
 }
 
 
-//estas funciones van a servir para manipular el store
+//estas funciones van a servir para manipular el store indirectamente
 export default {
     addTodo,
     deleteAll,
