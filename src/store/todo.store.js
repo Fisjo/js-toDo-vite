@@ -1,48 +1,55 @@
-import { Todo } from "../todos/models/todo.model";
+import { Todo } from '../todos/models/todo.model';
 
-
-const Filters = {
-    All: 'all', 
+export const Filters = {
+    All: 'all',
     Completed: 'Completed',
-    Pending: 'Pending',
+    Pending: 'Pending'
 }
 
 const state = {
     todos: [
-        new Todo('Tarea de prueba 1'),
-        new Todo('Tarea de prueba 2'),
-        new Todo('Tarea de prueba 3'),
-        new Todo('Tarea de prueba 4'),
-        new Todo('Tarea de prueba 5'),
-        
+        new Todo('Pieda del alma'),
+        new Todo('Pieda del espacio'),
+        new Todo('Pieda del tiempo'),
+        new Todo('Pieda del poder'),
+        new Todo('Pieda del realidad'),
     ],
     filter: Filters.All,
 }
 
+
 const initStore = () => {
-    console.log(state);
-    console.log('Init store <3');
+    loadStore();
+    console.log('InitStore <3');
 }
 
 const loadStore = () => {
-    throw new Error("Not implemented");
+    if( !localStorage.getItem('state') ) return;
+
+    const { todos = [], filter = Filters.All } = JSON.parse( localStorage.getItem('state') );
+    state.todos = todos;
+    state.filter = filter;
+}
+
+const saveStateToLocalStorage = () =>{
+    localStorage.setItem('state', JSON.stringify(state) );
 }
 
 
-
-const getTodos = (filter = Filters.All) => {
-    switch (filter) {
+const getTodos = ( filter = Filters.All ) => {
+    
+    switch( filter ) {
         case Filters.All:
-            return [...state.todos]; 
+            return [...state.todos];
         
-        case Filters.Completed: 
-            return state.filter(state.todos == true); 
-            
-        case Filters.Pending: 
-            return state.filter(state.todos === false);
+        case Filters.Completed:
+            return state.todos.filter( todo => todo.done );
+
+        case Filters.Pending:
+            return state.todos.filter( todo => !todo.done );
 
         default:
-            throw new Error(`Option ${filter} is not valid`);
+            throw new Error(`Option ${ filter } is not valid.`);
     }
 }
 
@@ -50,55 +57,53 @@ const getTodos = (filter = Filters.All) => {
  * 
  * @param {String} description 
  */
-const addTodo = (description) => {
-    if (!description) { throw new Error("Description is required"); }
-    state.todos.push( new Todo(description))    
+const addTodo = ( description ) => {
+    if ( !description ) throw new Error('Description is required');
+    state.todos.push( new Todo(description) );
+
+    saveStateToLocalStorage();
 }
-
-
-/**
- * Cambia el estado de la tarea al opuesto (hecho / no hecho)
- * @param {String} todoId 
- */
-const toggleTodo = (todoId) => {
-    state.todos = state.todos.map(todo => {
-        if (todo.id === todoId) {
-            todo.done === !todo.done; 
-        }
-        return todo; 
-    })
-}
-
 
 /**
  * 
- * @param {String} todoId 
+ * @param {String} todoId
  */
-const deleteTodo = (todoId) => {
-    state.todos = state.todos.filter(todo => todo.id !== todoId); 
+const toggleTodo = ( todoId ) => {
+    
+    state.todos = state.todos.map( todo => {
+        if( todo.id === todoId ) {
+            todo.done = !todo.done;
+        }
+        return todo;
+    });
+
+    saveStateToLocalStorage();
 }
 
+const deleteTodo = ( todoId ) => {
+    state.todos = state.todos.filter( todo => todo.id !== todoId  );
+    saveStateToLocalStorage();
+}
 
-const deleteCompleted = (newFilter = Filters.All) => {
-    state.todos = state.todos.filter(todo => todo.done); 
-
+const deleteCompleted = () => {
+    state.todos = state.todos.filter( todo => !todo.done );
+    saveStateToLocalStorage();
 }
 
 /**
  * 
  * @param {Filters} newFilter 
  */
-const setFilter = (newFilter = Filters.All) => {
-    state.filter = newFilter; 
+const setFilter = ( newFilter = Filters.All ) => {
+    state.filter = newFilter;
+    saveStateToLocalStorage();
 }
-
 
 const getCurrentFilter = () => {
-    return state.filter; 
+    return state.filter;
 }
 
 
-//estas funciones van a servir para manipular el store indirectamente
 export default {
     addTodo,
     deleteCompleted,
